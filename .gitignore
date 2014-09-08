@@ -1,0 +1,5 @@
+node_modules
+.vagrant
+Vagrantfile
+vagrant.sh
+.DS_Store

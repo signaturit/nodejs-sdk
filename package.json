@@ -1,0 +1,9 @@
+{
+    "name": "signaturit-sdk",
+    "version": "0.0.1",
+    "description": "Signaturit Node.js SDK",
+    "dependencies": {
+        "q": "^1.0.1",
+        "request": "^2.42.0"
+    }
+}
