@@ -8,7 +8,7 @@ Configuration
 Just import the Signaturit Client this way
 
 ```
-var SignaturitClient = require(FOLDER_PATH + '/signaturit.js');
+var SignaturitClient = require('signaturit-sdk');
 ```
 
 Then you can authenticate yourself using your AuthToken
