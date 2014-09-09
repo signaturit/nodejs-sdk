@@ -142,6 +142,10 @@ SignaturitClient.prototype.createSignatureRequest = function (filesPath, recipie
         }
     });
 
+    Object.keys(params).forEach(function(key) {
+        form.append(key, params[key]);
+    });
+
     return deferred.promise;
 };
 
