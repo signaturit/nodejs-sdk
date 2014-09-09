@@ -1,6 +1,6 @@
 {
     "name": "signaturit-sdk",
-    "version": "0.0.2",
+    "version": "0.0.3",
     "description": "Signaturit Node.js SDK",
     "repository": {
         "type": "git",

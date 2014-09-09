@@ -130,7 +130,16 @@ SignaturitClient.prototype.createSignatureRequest = function (filesPath, recipie
     recipients = [].concat(recipients);
 
     recipients.forEach(function(recipient, i) {
-        form.append('recipients[' + i + ']', recipient);
+        if (recipient.email) {
+            form.append('recipients[' + i + '][fullname]', recipient.fullname);
+            form.append('recipients[' + i + '][email]', recipient.email);
+
+            if (recipient.phone) {
+                form.append('recipients[' + i + '][phone]', recipient.phone);
+            }
+        } else {
+            form.append('recipients[' + i + ']', recipient);
+        }
     });
 
     return deferred.promise;
