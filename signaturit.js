@@ -47,7 +47,11 @@ SignaturitClient.prototype.setDocumentStorage = function (type, params) {
 
     params.type = type;
 
-    return requestWithDeferred('PATCH', '/v2/account.json', null, params);
+    return requestWithDeferred('POST', '/v2/account/storage.json', null, params);
+};
+
+SignaturitClient.prototype.revertToDefaultDocumentStorage = function () {
+    return requestWithDeferred('DELETE', '/v2/account/storage.json');
 };
 
 SignaturitClient.prototype.getSignature = function (signatureId) {

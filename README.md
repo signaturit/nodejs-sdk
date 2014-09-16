@@ -269,6 +269,22 @@ client.setDocumentStorage(credentials).then(function (error, result) {
 })
 ```
 
+### Revert to default document storage
+
+If you ever want to store your files in Signaturit's servers just run this method:
+
+```
+client.revertToDefaultDocumentStorage().then(function (error, result) {
+  if (result) {
+    // success code
+  }
+
+  if (error) {
+    // Error code
+  }
+})
+```
+
 ## Branding
 
 ### Get brandings

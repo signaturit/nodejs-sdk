@@ -17,6 +17,10 @@ client.setDocumentStorage('sftp', {
     console.log(account);
 });
 
+client.revertToDefaultDocumentStorage().then(function (account) {
+    console.log(account);
+});
+
 client.getSignature('e4f07bbb-3755-11e4-b3d4-0aa7697eb409').then(function (signature) {
     console.log(signature);
 });
