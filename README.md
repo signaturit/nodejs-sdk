@@ -193,6 +193,22 @@ client.createSignatureRequest(files, recipients, sign_params).then(function (err
 })
 ```
 
+### Cancel signature request
+
+Cancel a signature request.
+
+```
+client.cancelSignatureRequest('SIGNATURE_ID').then(function (error, result) {
+  if (result) {
+    // success code
+  }
+
+  if (error) {
+    // Error code
+  }
+})
+```
+
 ### Get audit trail
 
 Get the audit trail of a signature request document and save it in the submitted path.

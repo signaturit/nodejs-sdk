@@ -1,6 +1,6 @@
 SignaturitClient = require('./signaturit.js');
 
-client = new SignaturitClient('MDcxYTIyMGQyYTI1ZWIyNDNiY2IyZGMyNzY3MmFhNTI2MDA1MTJiM2RiMzEwMTE1YTA3OTFjYzQ0ODEzOWYwZQ');
+client = new SignaturitClient('MDcxYTIyMGQyYTI1ZWIyNDNiY2IyZGMyNzY3MmFhNTI2MDA1MTJiM2RiMzEwMTE1YTA3OTFjYzQ0ODEzOWYwZQ', true);
 
 client.getAccount().then(function (account) {
     console.log(account);
@@ -54,6 +54,10 @@ client.getSignedDocument('e4f07bbb-3755-11e4-b3d4-0aa7697eb409', 'e52a703e-3755-
 });
 
 client.createSignatureRequest('./file.pdf', 'ecentinela@gmail.com').then(function (signature) {
+    console.log(signature);
+});
+
+client.cancelSignatureRequest('e4f07bbb-3755-11e4-b3d4-0aa7697eb409').then(function (signature) {
     console.log(signature);
 });
 

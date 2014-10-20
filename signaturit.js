@@ -146,11 +146,17 @@ SignaturitClient.prototype.createSignatureRequest = function (filesPath, recipie
         }
     });
 
+    params = params || {};
+
     Object.keys(params).forEach(function(key) {
         form.append(key, params[key]);
     });
 
     return deferred.promise;
+};
+
+SignaturitClient.prototype.cancelSignatureRequest = function (signatureId) {
+    return requestWithDeferred('PATCH', '/v2/signs/' + signatureId + '/cancel.json');
 };
 
 SignaturitClient.prototype.getBranding = function (brandingId) {
