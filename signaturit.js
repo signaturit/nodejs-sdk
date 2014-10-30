@@ -23,6 +23,9 @@ function request (deferred, method, path, qs, body) {
         auth: {
             bearer: _credentials
         },
+        headers: {
+            'User-Agent': 'signaturit-node-sdk 0.0.6'
+        },
         json: true
     }, function (error, response, body) {
         if (error) {
