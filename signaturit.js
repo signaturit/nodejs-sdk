@@ -83,8 +83,6 @@ SignaturitClient.prototype.getSignatures = function (limit, offset, status, sinc
         }
     }
 
-    console.log(params);
-
     return requestWithDeferred('GET', '/v2/signs.json', params);
 };
 
