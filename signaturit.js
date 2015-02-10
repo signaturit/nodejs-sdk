@@ -61,7 +61,7 @@ SignaturitClient.prototype.getSignature = function (signatureId) {
     return requestWithDeferred('GET', '/v2/signs/' + signatureId + '.json');
 };
 
-SignaturitClient.prototype.getSignatures = function (limit, offset, status, since) {
+SignaturitClient.prototype.getSignatures = function (limit, offset, status, since, data) {
     var params = {
         limit: limit || 100,
         offset: offset || 0
@@ -75,10 +75,20 @@ SignaturitClient.prototype.getSignatures = function (limit, offset, status, sinc
         params.since = since;
     }
 
+    if (data) {
+        for (var key in data) {
+            var newKey = 'data.' + key;
+
+            params[newKey] = data[key];
+        }
+    }
+
+    console.log(params);
+
     return requestWithDeferred('GET', '/v2/signs.json', params);
 };
 
-SignaturitClient.prototype.countSignatures = function (status, since) {
+SignaturitClient.prototype.countSignatures = function (status, since, data) {
     var params = {};
 
     if (status) {
@@ -87,6 +97,14 @@ SignaturitClient.prototype.countSignatures = function (status, since) {
 
     if (since) {
         params.since = since;
+    }
+
+     if (data) {
+        for (var key in data) {
+            var newKey = 'data.' + key;
+
+            params[newKey] = data[key];
+        }
     }
 
     return requestWithDeferred('GET', '/v2/signs/count.json', params);
@@ -152,7 +170,13 @@ SignaturitClient.prototype.createSignatureRequest = function (filesPath, recipie
     params = params || {};
 
     Object.keys(params).forEach(function(key) {
-        form.append(key, params[key]);
+        if ('object' == typeof(params[key])) {
+            Object.keys(params[key]).forEach(function(innerKey) {
+                form.append(key +'[' + innerKey + ']', params[key][innerKey])
+            });
+        } else {
+            form.append(key, params[key]);
+        }
     });
 
     return deferred.promise;

@@ -102,6 +102,20 @@ client.getSignatures(null, null, 3, '2014-7-20').then(function (error, result) {
 })
 ```
 
+##### Getting signatures with custom field "crm_id"
+
+```
+client.getSignatures(null, null, null, null, {'crm_id': 2445}).then(function (error, result) {
+  if (result) {
+    // success code
+  }
+
+  if (error) {
+    // Error code
+  }
+})
+```
+
 ### Count signature requests
 
 Count your signature requests.
@@ -179,8 +193,30 @@ files = ['./Signaturit.pdf'];
 
 sign_params = {
   'subject': 'Receipt number 250',
-    'body': 'Please, can you sign this document?'
- }
+  'body': 'Please, can you sign this document?'
+}
+
+client.createSignatureRequest(files, recipients, sign_params).then(function (error, result) {
+  if (result) {
+    // success code
+  }
+
+  if (error) {
+    // Error code
+  }
+})
+```
+
+You can add custom info in your requests
+
+```
+files = ['./Signaturit.pdf'];
+
+sign_params = {
+  'subject': 'Receipt number 250',
+  'body': 'Please, can you sign this document?'
+  'data': {'crm_id': 2445}
+}
 
 client.createSignatureRequest(files, recipients, sign_params).then(function (error, result) {
   if (result) {
