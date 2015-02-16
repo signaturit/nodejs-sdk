@@ -207,6 +207,26 @@ client.createSignatureRequest(files, recipients, sign_params).then(function (err
 })
 ```
 
+You can send templates with the fields filled
+
+```
+sign_params = {
+  'subject': 'Receipt number 250',
+  'body': 'Please, can you sign this document?',
+  'templates': {'TEMPLATE_NAME'},
+  'data': {'WIDGET_ID': 'DEFAULT_VALUE'}
+}
+
+client.createSignatureRequest([], recipients, sign_params).then(function (error, result) {
+  if (result) {
+    // success code
+  }
+
+  if (error) {
+    // Error code
+  }
+})
+
 You can add custom info in your requests
 
 ```
@@ -214,7 +234,7 @@ files = ['./Signaturit.pdf'];
 
 sign_params = {
   'subject': 'Receipt number 250',
-  'body': 'Please, can you sign this document?'
+  'body': 'Please, can you sign this document?',
   'data': {'crm_id': 2445}
 }
 
