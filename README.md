@@ -229,7 +229,7 @@ client.createSignatureRequest([], recipients, sign_params).then(function (error,
 
 You can add custom info in your requests
 
-```
+```javascript
 files = ['./Signaturit.pdf'];
 
 sign_params = {
