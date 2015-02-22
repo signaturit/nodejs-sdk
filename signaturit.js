@@ -29,7 +29,7 @@ function request (deferred, method, path, qs, body) {
         json: true
     }, function (error, response, body) {
         if (error) {
-            deferred.reject(result);
+            deferred.reject(error);
         } else {
             deferred.resolve(body);
         }
