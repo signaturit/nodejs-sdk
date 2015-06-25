@@ -61,7 +61,7 @@ SignaturitClient.prototype.getSignature = function (signatureId) {
     return requestWithDeferred('GET', '/v2/signs/' + signatureId + '.json');
 };
 
-SignaturitClient.prototype.getSignatures = function (limit, offset, status, since, data) {
+SignaturitClient.prototype.getSignatures = function (limit, offset, status, since, data, ids) {
     var params = {
         limit: limit || 100,
         offset: offset || 0
@@ -83,10 +83,14 @@ SignaturitClient.prototype.getSignatures = function (limit, offset, status, sinc
         }
     }
 
+    if (ids) {
+        params['ids'] = ids.join(',');
+    }
+
     return requestWithDeferred('GET', '/v2/signs.json', params);
 };
 
-SignaturitClient.prototype.countSignatures = function (status, since, data) {
+SignaturitClient.prototype.countSignatures = function (status, since, data, ids) {
     var params = {};
 
     if (status) {
@@ -103,6 +107,10 @@ SignaturitClient.prototype.countSignatures = function (status, since, data) {
 
             params[newKey] = data[key];
         }
+    }
+
+    if (ids) {
+        params['ids'] = ids.join(',');
     }
 
     return requestWithDeferred('GET', '/v2/signs/count.json', params);
