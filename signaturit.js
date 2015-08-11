@@ -36,122 +36,36 @@ function request (deferred, method, path, qs, body) {
     });
 }
 
-function SignaturitClient (credentials, production) {
-    _credentials = credentials;
-    _production  = production;
+function extractQueryParameters(conditions)
+{
+    var parameters = {};
+
+    for (var key in conditions) {
+        if (key === 'data') {
+            var data = conditions[key];
+
+            for (var dataKey in data) {
+                parameters[key][dataKey] = data[dataKey];
+            }
+
+            continue;
+        }
+
+        if (key === 'ids') {
+            conditions[key] = value.join(',');
+        }
+
+        parameters[key] = conditions[key]
+    }
+
+    return parameters;
 }
 
-SignaturitClient.prototype.getAccount = function () {
-    return requestWithDeferred('GET', '/v2/account.json');
-};
+function extractPostParameters (form, files, recipients, parameters)
+{
+    files = [].concat(files);
 
-SignaturitClient.prototype.setDocumentStorage = function (type, params) {
-    params = params || {};
-
-    params.type = type;
-
-    return requestWithDeferred('POST', '/v2/account/storage.json', null, params);
-};
-
-SignaturitClient.prototype.revertToDefaultDocumentStorage = function () {
-    return requestWithDeferred('DELETE', '/v2/account/storage.json');
-};
-
-SignaturitClient.prototype.getSignature = function (signatureId) {
-    return requestWithDeferred('GET', '/v2/signs/' + signatureId + '.json');
-};
-
-SignaturitClient.prototype.getSignatures = function (limit, offset, status, since, data, ids) {
-    var params = {
-        limit: limit || 100,
-        offset: offset || 0
-    };
-
-    if (status) {
-        params.status = status;
-    }
-
-    if (since) {
-        params.since = since;
-    }
-
-    if (data) {
-        for (var key in data) {
-            var newKey = 'data.' + key;
-
-            params[newKey] = data[key];
-        }
-    }
-
-    if (ids) {
-        params['ids'] = ids.join(',');
-    }
-
-    return requestWithDeferred('GET', '/v2/signs.json', params);
-};
-
-SignaturitClient.prototype.countSignatures = function (status, since, data, ids) {
-    var params = {};
-
-    if (status) {
-        params.status = status;
-    }
-
-    if (since) {
-        params.since = since;
-    }
-
-     if (data) {
-        for (var key in data) {
-            var newKey = 'data.' + key;
-
-            params[newKey] = data[key];
-        }
-    }
-
-    if (ids) {
-        params['ids'] = ids.join(',');
-    }
-
-    return requestWithDeferred('GET', '/v2/signs/count.json', params);
-};
-
-SignaturitClient.prototype.getSignatureDocument = function (signatureId, documentId) {
-    return requestWithDeferred('GET', '/v2/signs/' + signatureId + '/documents/' + documentId + '.json');
-};
-
-SignaturitClient.prototype.getSignatureDocuments = function (signatureId) {
-    return requestWithDeferred('GET', '/v2/signs/' + signatureId + '/documents.json');
-};
-
-SignaturitClient.prototype.getAuditTrail = function (signatureId, documentId, path) {
-    var deferred = Q.defer();
-
-    request(deferred, 'GET', '/v2/signs/' + signatureId + '/documents/' + documentId + '/download/doc_proof').pipe(
-        fs.createWriteStream(path)
-    );
-
-    return deferred.promise;
-};
-
-SignaturitClient.prototype.getSignedDocument = function (signatureId, documentId, path) {
-    var deferred = Q.defer();
-
-    request(deferred, 'GET', '/v2/signs/' + signatureId + '/documents/' + documentId + '/download/signed').pipe(
-        fs.createWriteStream(path)
-    );
-
-    return deferred.promise;
-};
-
-SignaturitClient.prototype.createSignatureRequest = function (filesPath, recipients, params) {
-    var deferred = Q.defer(),
-        req      = request(deferred, 'POST', '/v2/signs.json'),
-        form     = req.form();
-
-    filesPath = [].concat(filesPath);
-
-    filesPath.forEach(function(filePath, i) {
+    files.forEach(function(filePath, i) {
         form.append(
             'files[' + i + ']',
             fs.createReadStream(filePath)
@@ -173,26 +87,93 @@ SignaturitClient.prototype.createSignatureRequest = function (filesPath, recipie
         }
     });
 
-    params = params || {};
+    parameters = parameters || {};
 
-    Object.keys(params).forEach(function(key) {
-        if ('object' == typeof(params[key])) {
-            Object.keys(params[key]).forEach(function(innerKey) {
-                form.append(key +'[' + innerKey + ']', params[key][innerKey])
+    Object.keys(parameters).forEach(function(key) {
+        if ('object' == typeof(parameters[key])) {
+            Object.keys(parameters[key]).forEach(function(innerKey) {
+                form.append(key +'[' + innerKey + ']', parameters[key][innerKey])
             });
         } else {
-            form.append(key, params[key]);
+            form.append(key, parameters[key]);
         }
     });
+
+    return form;
+}
+
+function SignaturitClient (credentials, production) {
+    _credentials = credentials;
+    _production  = production;
+}
+
+SignaturitClient.prototype.getAccount = function () {
+    return requestWithDeferred('GET', '/v2/account.json');
+};
+
+
+SignaturitClient.prototype.getSignature = function (signatureId) {
+    return requestWithDeferred('GET', '/v2/signs/' + signatureId + '.json');
+};
+
+SignaturitClient.prototype.getSignatures = function (limit, offset, conditions) {
+    var parameters = extractQueryParameters(conditions);
+
+    parameters.limit  = limit || 100;
+    parameters.offset = offset || 0;
+
+    return requestWithDeferred('GET', '/v2/signs.json', parameters);
+};
+
+SignaturitClient.prototype.countSignatures = function (conditions) {
+    var parameters = extractQueryParameters(conditions);
+
+    return requestWithDeferred('GET', '/v2/signs/count.json', parameters);
+};
+
+SignaturitClient.prototype.getSignatureDocument = function (signatureId, documentId) {
+    return requestWithDeferred('GET', '/v2/signs/' + signatureId + '/documents/' + documentId + '.json');
+};
+
+SignaturitClient.prototype.getSignatureDocuments = function (signatureId) {
+    return requestWithDeferred('GET', '/v2/signs/' + signatureId + '/documents.json');
+};
+
+SignaturitClient.prototype.downloadAuditTrail = function (signatureId, documentId, path) {
+    var deferred = Q.defer();
+
+    request(deferred, 'GET', '/v2/signs/' + signatureId + '/documents/' + documentId + '/download/doc_proof').pipe(
+        fs.createWriteStream(path)
+    );
 
     return deferred.promise;
 };
 
-SignaturitClient.prototype.cancelSignatureRequest = function (signatureId) {
+SignaturitClient.prototype.downloadSignedDocument = function (signatureId, documentId, path) {
+    var deferred = Q.defer();
+
+    request(deferred, 'GET', '/v2/signs/' + signatureId + '/documents/' + documentId + '/download/signed').pipe(
+        fs.createWriteStream(path)
+    );
+
+    return deferred.promise;
+};
+
+SignaturitClient.prototype.createSignature = function (filesPath, recipients, params) {
+    var deferred = Q.defer(),
+        req      = request(deferred, 'POST', '/v2/signs.json'),
+        form     = req.form();
+
+    extractPostParameters(form, filesPath, recipients, params);
+
+    return deferred.promise;
+};
+
+SignaturitClient.prototype.cancelSignaturet = function (signatureId) {
     return requestWithDeferred('PATCH', '/v2/signs/' + signatureId + '/cancel.json');
 };
 
-SignaturitClient.prototype.sendReminder = function (signatureId, documentId) {
+SignaturitClient.prototype.sendSignatureReminder = function (signatureId, documentId) {
     return requestWithDeferred('POST', '/v2/signs/' + signatureId + '/documents/' + documentId + '/reminder.json');
 };
 
@@ -222,7 +203,7 @@ SignaturitClient.prototype.updateBrandingLogo = function (brandingId, filePath) 
     return deferred.promise;
 };
 
-SignaturitClient.prototype.updateBrandingTemplate = function (brandingId, template, filePath) {
+SignaturitClient.prototype.updateBrandingEmail= function (brandingId, template, filePath) {
     var deferred = Q.defer();
 
     fs.createReadStream(filePath).pipe(
@@ -235,5 +216,65 @@ SignaturitClient.prototype.updateBrandingTemplate = function (brandingId, templa
 SignaturitClient.prototype.getTemplates = function () {
     return requestWithDeferred('GET', '/v2/templates.json');
 };
+
+SignaturitClient.prototype.getEmails = function(limit, offset, conditions) {
+    var parameters = extractQueryParameters(conditions);
+
+    parameters.limit  = limit || 100;
+    parameters.offset = offset || 0;
+
+    return requestWithDeferred('GET', '/v3/emails.json', parameters);
+};
+
+SignaturitClient.prototype.countEmails = function(conditions) {
+    var parameters = extractQueryParameters(conditions);
+
+    return requestWithDeferred('GET', '/v3/emails/count.json', parameters);
+};
+
+SignaturitClient.prototype.getEmail = function(emailId) {
+    return requestWithDeferred('GET', "/v3/emails/" + emailId + ".json");
+};
+
+SignaturitClient.prototype.getEmailCertificates = function(emailId) {
+    return requestWithDeferred('GET', "/v3/emails/" + emailId + "/certificates.json");
+};
+
+SignaturitClient.prototype.getEmailCertificate = function(emailId, certificateId) {
+    return requestWithDeferred('GET', "/v3/emails/" + emailId + "/certificates/" + certificateId + ".json");
+};
+
+SignaturitClient.prototype.createEmail = function(files, recipients, subject, body, params) {
+    var deferred = Q.defer(),
+        req      = request(deferred, 'POST', '/v3/emails.json'),
+        form     = req.form();
+
+    extractPostParameters(form, files, recipients, params);
+
+    form.append('subject', subject);
+    form.append('body', body);
+
+    return deferred.promise;
+};
+
+SignaturitClient.prototype.downloadEmailAuditTrail = function (emailId, certificateId, path) {
+    var deferred = Q.defer();
+
+    request(deferred, 'GET', '/v3/emails/' + emailId + '/certificates/' + certificateId + '/download/audit_trail').pipe(
+        fs.createWriteStream(path)
+    );
+
+    return deferred.promise;
+};
+SignaturitClient.prototype.downloadSignedDocument = function (emailId, certificateId, path) {
+    var deferred = Q.defer();
+
+    request(deferred, 'GET', '/v3/emails/' + emailId + '/certificates/' + certificateId + '/download/original').pipe(
+        fs.createWriteStream(path)
+    );
+
+    return deferred.promise;
+};
+
 
 module.exports = SignaturitClient;

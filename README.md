@@ -77,7 +77,7 @@ client.getSignatures(50, 50).then(function (error, result) {
 ##### Getting only the finished signatures 
 
 ```
-client.getSignatures(null, null, 3).then(function (error, result) {
+client.getSignatures(null, null, {"status": "FINISHED").then(function (error, result) {
   if (result) {
     // success code
   }
@@ -91,7 +91,7 @@ client.getSignatures(null, null, 3).then(function (error, result) {
 ##### Getting the finished signatures created since July 20th of 2014
 
 ```
-client.getSignatures(null, null, 3, '2014-7-20').then(function (error, result) {
+client.getSignatures(null, null, {"status": "FINISHED", "since": '2014-7-20'}).then(function (error, result) {
   if (result) {
     // success code
   }
@@ -105,7 +105,7 @@ client.getSignatures(null, null, 3, '2014-7-20').then(function (error, result) {
 ##### Getting signatures with custom field "crm_id"
 
 ```
-client.getSignatures(null, null, null, null, {'crm_id': 2445}).then(function (error, result) {
+client.getSignatures(null, null, null, {"data": {'crm_id': 2445}}).then(function (error, result) {
   if (result) {
     // success code
   }
@@ -196,7 +196,7 @@ sign_params = {
   'body': 'Please, can you sign this document?'
 }
 
-client.createSignatureRequest(files, recipients, sign_params).then(function (error, result) {
+client.createSignature(files, recipients, sign_params).then(function (error, result) {
   if (result) {
     // success code
   }
@@ -217,7 +217,7 @@ sign_params = {
   'data': {'WIDGET_ID': 'DEFAULT_VALUE'}
 }
 
-client.createSignatureRequest([], recipients, sign_params).then(function (error, result) {
+client.createSignature([], recipients, sign_params).then(function (error, result) {
   if (result) {
     // success code
   }
@@ -238,7 +238,7 @@ sign_params = {
   'data': {'crm_id': 2445}
 }
 
-client.createSignatureRequest(files, recipients, sign_params).then(function (error, result) {
+client.createSignature(files, recipients, sign_params).then(function (error, result) {
   if (result) {
     // success code
   }
@@ -254,7 +254,7 @@ client.createSignatureRequest(files, recipients, sign_params).then(function (err
 Cancel a signature request.
 
 ```
-client.cancelSignatureRequest('SIGNATURE_ID').then(function (error, result) {
+client.cancelSignature('SIGNATURE_ID').then(function (error, result) {
   if (result) {
     // success code
   }
@@ -270,7 +270,7 @@ client.cancelSignatureRequest('SIGNATURE_ID').then(function (error, result) {
 Send a reminder for signature request job.
 
 ```
-client.sendReminder('SIGNATURE_ID', 'DOCUMENT_ID').then(function (error, result) {
+client.sendSignatureReminder('SIGNATURE_ID', 'DOCUMENT_ID').then(function (error, result) {
   if (result) {
     // success code
   }
@@ -286,7 +286,7 @@ client.sendReminder('SIGNATURE_ID', 'DOCUMENT_ID').then(function (error, result)
 Get the audit trail of a signature request document and save it in the submitted path.
 
 ```
-client.getAuditTrail('SIGNATURE_ID','DOCUMENT_ID','/path/doc.pdf').then(function (error, result) {
+client.downloadAuditTrail('SIGNATURE_ID','DOCUMENT_ID','/path/doc.pdf').then(function (error, result) {
   if (result) {
     // success code
   }
@@ -302,7 +302,7 @@ client.getAuditTrail('SIGNATURE_ID','DOCUMENT_ID','/path/doc.pdf').then(function
 Get the signed document of a signature request document and save it in the submitted path.
 
 ```
-client.getSignedDocument('SIGNATURE_ID','DOCUMENT_ID','/path/doc.pdf').then(function (error, result) {
+client.downloadSignedDocument('SIGNATURE_ID','DOCUMENT_ID','/path/doc.pdf').then(function (error, result) {
   if (result) {
     // success code
   }
@@ -321,48 +321,6 @@ Retrieve the information of your account.
 
 ```
 client.getAccount().then(function (error, result) {
-  if (result) {
-    // success code
-  }
-
-  if (error) {
-    // Error code
-  }
-})
-```
-
-### Set document storage
-
-Set your own storage credentials, to store a copy of the documents. You can get all the info of credential types [here](http://docs.signaturit.com/api/#account_set_credentials).
-
-```
-credentials = {
-    "type": "sftp",
-    "user": "john",
-    "port": 22,
-    "dir": "/test",
-    "host": "john.doe.server",
-    "password": "XXX",
-    "auth_method": "PASS"
-}
-
-client.setDocumentStorage(credentials).then(function (error, result) {
-  if (result) {
-    // success code
-  }
-
-  if (error) {
-    // Error code
-  }
-})
-```
-
-### Revert to default document storage
-
-If you ever want to store your files in Signaturit's servers just run this method:
-
-```
-client.revertToDefaultDocumentStorage().then(function (error, result) {
   if (result) {
     // success code
   }
@@ -482,7 +440,7 @@ params = {
   files: ['/path/new_template.html']
 }
 
-client.updateBrandingTemplate('BRANDING_ID', templateName, filePath).then(function (error, result) {
+client.updateBrandingEmail('BRANDING_ID', templateName, filePath).then(function (error, result) {
   if (result) {
     // success code
   }
@@ -501,6 +459,174 @@ Retrieve all data from your templates.
 
 ```
 client.getTemplates().then(function (error, result) {
+  if (result) {
+    // success code
+  }
+
+  if (error) {
+    // Error code
+  }
+})
+```
+
+
+
+##Emails
+
+### Get emails
+
+Get all certified emails
+
+####Get all certified emails
+
+```
+client.getEmails().then(function(error, result) {
+    if (result) {
+        // Success code
+    }
+
+    if (error) {
+        // Error code
+    }
+});
+```
+
+####Get last 50 emails
+
+```
+client.getEmails(50).then(function(error, result) {
+    if (result) {
+        // Success code
+    }
+
+    if (error) {
+        // Error code
+    }
+});
+```
+
+####Navigate through all emails in blocks of 50 results
+
+```
+client.getEmails(50, 50).then(function(error, result) {
+    if (result) {
+        // Success code
+    }
+
+    if (error) {
+        // Error code
+    }
+});
+```
+
+### Count emails
+
+Count all certified emails
+
+```
+client.countEmails().then(function(error, result) {
+    if (result) {
+        // Success code
+    }
+
+    if (error) {
+        // Error code
+    }
+});
+```
+
+### Get email
+
+Get a single email
+
+```
+client.getEmail('EMAIL_ID').then(function(error, result) {
+    if (result) {
+        // Success code
+    }
+
+    if (error) {
+        // Error code
+    }
+});
+```
+
+### Get email certificates
+
+Get a single email certificates
+
+```
+client.getEmailCertificates('EMAIL_ID').then(function(error, result) {
+    if (result) {
+        // Success code
+    }
+
+    if (error) {
+        // Error code
+    }
+});
+```
+
+### Get email certificate
+
+Get a single email certificate
+
+```
+client.getEmailCertificate('EMAIL_ID', 'CERTIFICATE_ID').then(function(error, result) {
+    if (result) {
+        // Success code
+    }
+
+    if (error) {
+        // Error code
+    }
+});
+```
+
+### Create email
+
+Create a new certified email.
+
+```
+recipients = [
+  {'fullname': 'Bob', 'email': 'alexflores120@gmail.com', 'phone': 346661058397}
+];
+
+files = ['./Signaturit.pdf'];
+
+client.createEmail(files, recipients, "Node subject", "Node body").then(function(error, result) {
+    if (result) {
+        // Success code
+    }
+
+    if (error) {
+        // Error code
+    }
+});
+```
+
+### Get original document
+
+Get the original document of an email request and save it in the submitted path.
+
+```
+client.downloadEmailOriginalFile('EMAIL_ID','CERTIFICATE_ID','/path/doc.pdf').then(function (error, result) {
+  if (result) {
+    // success code
+  }
+
+  if (error) {
+    // Error code
+  }
+})
+```
+
+### Get audit trail document
+
+Get the audit trail document of an email request and save it in the submitted path.
+
+```
+client.downloadEmailAuditTrail('EMAIL_ID','CERTIFICATE_ID','/path/doc.pdf').then(function (error, result) {
   if (result) {
     // success code
   }
