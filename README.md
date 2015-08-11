@@ -32,7 +32,7 @@ Examples
 
 Retrieve all data from your signature requests using different filters.
 
-##### All signatures
+#### All signatures
 
 ```
 client.getSignatures().then(function (error, result) {
@@ -43,10 +43,10 @@ client.getSignatures().then(function (error, result) {
   if (error) {
     // Error code
   }
-})
+});
 ```
 
-##### Getting the last 50 signatures
+#### Getting the last 50 signatures
 
 ```
 client.getSignatures(50).then(function (error, result) {
@@ -57,10 +57,10 @@ client.getSignatures(50).then(function (error, result) {
   if (error) {
     // Error code
   }
-})
+});
 ```
 
-##### Getting the following last 50 signatures
+#### Getting the following last 50 signatures
 
 ```
 client.getSignatures(50, 50).then(function (error, result) {
@@ -71,10 +71,10 @@ client.getSignatures(50, 50).then(function (error, result) {
   if (error) {
     // Error code
   }
-})
+});
 ```
 
-##### Getting only the finished signatures 
+#### Getting only the finished signatures
 
 ```
 client.getSignatures(null, null, {"status": "FINISHED").then(function (error, result) {
@@ -85,10 +85,10 @@ client.getSignatures(null, null, {"status": "FINISHED").then(function (error, re
   if (error) {
     // Error code
   }
-})
+});
 ```
 
-##### Getting the finished signatures created since July 20th of 2014
+#### Getting the finished signatures created since July 20th of 2014
 
 ```
 client.getSignatures(null, null, {"status": "FINISHED", "since": '2014-7-20'}).then(function (error, result) {
@@ -99,7 +99,7 @@ client.getSignatures(null, null, {"status": "FINISHED", "since": '2014-7-20'}).t
   if (error) {
     // Error code
   }
-})
+});
 ```
 
 ##### Getting signatures with custom field "crm_id"
@@ -226,11 +226,12 @@ client.createSignature([], recipients, sign_params).then(function (error, result
     // Error code
   }
 })
+```
 
 You can add custom info in your requests
 
 ```
-files = ['./Signaturit.pdf'];
+files = ["./Signaturit.pdf"];
 
 sign_params = {
   'subject': 'Receipt number 250',
