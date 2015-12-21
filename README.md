@@ -1,3 +1,6 @@
+DO NOT USE THIS CODE ON PRODUCTION UNTIL NEW RELEASE IS DONE
+============================================================
+
 Signaturit NODEJS SDK
 =====================
 This package is a wrapper for Signaturit Api. If you didn't read the documentation yet, maybe it's time to take a look [here](http://docs.signaturit.com/).
@@ -77,7 +80,7 @@ client.getSignatures(50, 50).then(function (error, result) {
 #### Getting only the finished signatures
 
 ```
-client.getSignatures(null, null, {"status": "FINISHED").then(function (error, result) {
+client.getSignatures(null, null, {"status": "completed").then(function (error, result) {
   if (result) {
     // success code
   }
@@ -91,7 +94,7 @@ client.getSignatures(null, null, {"status": "FINISHED").then(function (error, re
 #### Getting the finished signatures created since July 20th of 2014
 
 ```
-client.getSignatures(null, null, {"status": "FINISHED", "since": '2014-7-20'}).then(function (error, result) {
+client.getSignatures(null, null, {"status": "completed", "since": '2014-7-20'}).then(function (error, result) {
   if (result) {
     // success code
   }
@@ -105,7 +108,7 @@ client.getSignatures(null, null, {"status": "FINISHED", "since": '2014-7-20'}).t
 ##### Getting signatures with custom field "crm_id"
 
 ```
-client.getSignatures(null, null, null, {"data": {'crm_id': 2445}}).then(function (error, result) {
+client.getSignatures(null, null, {'crm_id': 2445}).then(function (error, result) {
   if (result) {
     // success code
   }
@@ -148,45 +151,13 @@ client.getSignature('SIGNATURE_ID').then(function (error, result) {
 })
 ```
 
-### Get signature documents
-
-Get all documents from a signature request.
-
-```
-client.getSignatureDocuments('SIGNATURE_ID').then(function (error, result) {
-  if (result) {
-    // success code
-  }
-
-  if (error) {
-    // Error code
-  }
-})
-```
-
-### Get signature document
-
-Get a single document from a signature request.
-
-```
-client.getSignatureDocument('SIGNATURE_ID','DOCUMENT_ID').then(function (error, result) {
-  if (result) {
-    // success code
-  }
-
-  if (error) {
-    // Error code
-  }
-})
-```
-
 ### Signature request
 
 Create a new signature request. Check all [params](http://docs.signaturit.com/api/#sign_create_sign).
 
 ```
 recipients = [
-  {'fullname': 'Bob', 'email': 'alexflores120@gmail.com', 'phone': 346661058397}
+  {'name': 'Bob', 'email': 'alexflores120@gmail.com', 'phone': 346661058397}
 ];
 
 files = ['./Signaturit.pdf'];
@@ -284,10 +255,10 @@ client.sendSignatureReminder('SIGNATURE_ID', 'DOCUMENT_ID').then(function (error
 
 ### Get audit trail
 
-Get the audit trail of a signature request document and save it in the submitted path.
+Get the audit trail of a signature request document
 
 ```
-client.downloadAuditTrail('SIGNATURE_ID','DOCUMENT_ID','/path/doc.pdf').then(function (error, result) {
+client.downloadAuditTrail('SIGNATURE_ID','DOCUMENT_ID').then(function (error, result) {
   if (result) {
     // success code
   }
@@ -300,28 +271,10 @@ client.downloadAuditTrail('SIGNATURE_ID','DOCUMENT_ID','/path/doc.pdf').then(fun
 
 ### Get signed document
 
-Get the signed document of a signature request document and save it in the submitted path.
+Get the signed document of a signature request document
 
 ```
-client.downloadSignedDocument('SIGNATURE_ID','DOCUMENT_ID','/path/doc.pdf').then(function (error, result) {
-  if (result) {
-    // success code
-  }
-
-  if (error) {
-    // Error code
-  }
-})
-```
-
-## Account
-
-### Get account
-
-Retrieve the information of your account.
-
-```
-client.getAccount().then(function (error, result) {
+client.downloadSignedDocument('SIGNATURE_ID','DOCUMENT_ID').then(function (error, result) {
   if (result) {
     // success code
   }
@@ -412,46 +365,6 @@ client.updateBranding('BRANDING_ID', brandingParams).then(function (error, resul
 })
 ```
 
-### Update branding logo
-
-Change the branding logo.
-
-```
-params = {
-  files: ['/path/new_logo.png']
-}
-
-client.updateBrandingLogo('BRANDING_ID', filePath).then(function (error, result) {
-  if (result) {
-    // success code
-  }
-
-  if (error) {
-    // Error code
-  }
-})
-```
-
-### Update branding template
-
-Change a template. Learn more about the templates [here](http://docs.signaturit.com/api/#put_template_branding).
-
-```
-params = {
-  files: ['/path/new_template.html']
-}
-
-client.updateBrandingEmail('BRANDING_ID', templateName, filePath).then(function (error, result) {
-  if (result) {
-    // success code
-  }
-
-  if (error) {
-    // Error code
-  }
-})
-```
-
 ## Template
 
 ### Get all templates
@@ -469,7 +382,6 @@ client.getTemplates().then(function (error, result) {
   }
 })
 ```
-
 
 
 ##Emails
@@ -552,38 +464,6 @@ client.getEmail('EMAIL_ID').then(function(error, result) {
 });
 ```
 
-### Get email certificates
-
-Get a single email certificates
-
-```
-client.getEmailCertificates('EMAIL_ID').then(function(error, result) {
-    if (result) {
-        // Success code
-    }
-
-    if (error) {
-        // Error code
-    }
-});
-```
-
-### Get email certificate
-
-Get a single email certificate
-
-```
-client.getEmailCertificate('EMAIL_ID', 'CERTIFICATE_ID').then(function(error, result) {
-    if (result) {
-        // Success code
-    }
-
-    if (error) {
-        // Error code
-    }
-});
-```
-
 ### Create email
 
 Create a new certified email.
@@ -606,28 +486,12 @@ client.createEmail(files, recipients, "Node subject", "Node body").then(function
 });
 ```
 
-### Get original document
-
-Get the original document of an email request and save it in the submitted path.
-
-```
-client.downloadEmailOriginalFile('EMAIL_ID','CERTIFICATE_ID','/path/doc.pdf').then(function (error, result) {
-  if (result) {
-    // success code
-  }
-
-  if (error) {
-    // Error code
-  }
-})
-```
-
 ### Get audit trail document
 
-Get the audit trail document of an email request and save it in the submitted path.
+Get the audit trail document of an email request
 
 ```
-client.downloadEmailAuditTrail('EMAIL_ID','CERTIFICATE_ID','/path/doc.pdf').then(function (error, result) {
+client.downloadEmailAuditTrail('EMAIL_ID','CERTIFICATE_ID').then(function (error, result) {
   if (result) {
     // success code
   }
