@@ -136,8 +136,8 @@ SignaturitClient.prototype.cancelSignature = function (signatureId) {
     return requestWithDeferred('PATCH', '/v3/signatures/' + signatureId + '/cancel.json');
 };
 
-SignaturitClient.prototype.sendSignatureReminder = function (signatureId, documentId) {
-    return requestWithDeferred('POST', '/v3/signatures/' + signatureId + '/documents/' + documentId + '/reminder.json');
+SignaturitClient.prototype.sendSignatureReminder = function (signatureId) {
+    return requestWithDeferred('POST', '/v3/signatures/' + signatureId + '/reminder.json');
 };
 
 SignaturitClient.prototype.getBranding = function (brandingId) {
