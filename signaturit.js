@@ -38,9 +38,9 @@ function request (deferred, method, path, qs, body) {
 
 function extractQueryParameters(conditions)
 {
-    var parameters = {};
+    var parameters = {}, key;
 
-    for (var key in conditions) {
+    for (key in conditions) {
         if (key === 'ids') {
             conditions[key] = value.join(',');
         }
@@ -53,10 +53,11 @@ function extractQueryParameters(conditions)
 
 function fillArray(formArray, values, parent)
 {
-    for (var key in values) {
-        var value     = values[key];
+    var key, value, parentKey;
 
-        var parentKey = parent.length === 0 ? key : parent + "[" + key + "]";
+    for (key in values) {
+        value     = values[key];
+        parentKey = parent.length === 0 ? key : parent + "[" + key + "]";
 
         if (value instanceof Array || value instanceof Object) {
             fillArray(formArray, value, parentKey);
@@ -201,6 +202,5 @@ SignaturitClient.prototype.createEmail = function(files, recipients, subject, bo
 SignaturitClient.prototype.downloadEmailAuditTrail = function (emailId, certificateId) {
     return requestWithDeferred('GET', '/v3/emails/' + emailId + '/certificates/' + certificateId + '/download/audit_trail');
 };
-
 
 module.exports = SignaturitClient;
