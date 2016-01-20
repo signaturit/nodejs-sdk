@@ -239,10 +239,10 @@ client.cancelSignature('SIGNATURE_ID').then(function (error, result) {
 
 ### Send reminder
 
-Send a reminder for signature request job.
+Send a reminder to signature request.
 
 ```
-client.sendSignatureReminder('SIGNATURE_ID', 'DOCUMENT_ID').then(function (error, result) {
+client.sendSignatureReminder('SIGNATURE_ID').then(function (error, result) {
   if (result) {
     // success code
   }

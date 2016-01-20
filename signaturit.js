@@ -13,7 +13,7 @@ function requestWithDeferred (method, path, qs, body) {
 }
 
 function request (deferred, method, path, qs, body) {
-    var base = _production ? 'https://api.signaturit.com' : 'http://api.sandbox.signaturit.com';
+    var base = _production ? 'https://api.signaturit.com' : 'https://api.sandbox.signaturit.com';
 
     return req({
         method: method,
@@ -156,8 +156,13 @@ SignaturitClient.prototype.updateBranding = function (brandingId, params) {
     return requestWithDeferred('PATCH', '/v3/brandings/' + brandingId + '.json', null, params);
 };
 
-SignaturitClient.prototype.getTemplates = function () {
-    return requestWithDeferred('GET', '/v3/templates.json');
+SignaturitClient.prototype.getTemplates = function (limit, offset) {
+    var parameters = {}
+
+    parameters.limit  = limit || 100;
+    parameters.offset = offset || 0;
+
+    return requestWithDeferred('GET', '/v3/templates.json', parameters);
 };
 
 SignaturitClient.prototype.getEmails = function(limit, offset, conditions) {
