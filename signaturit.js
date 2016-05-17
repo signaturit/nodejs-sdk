@@ -28,10 +28,10 @@ function request (deferred, method, path, qs, body) {
         },
         json: true
     }, function (error, response, body) {
-        if (error) {
-            deferred.reject(error);
-        } else {
+        if (!error && response.statusCode < 400) {
             deferred.resolve(body);
+        } else {
+            deferred.reject(body);
         }
     });
 }
