@@ -17,6 +17,7 @@ function request (deferred, method, path, qs, body) {
 
     return req({
         method: method,
+        encoding: null,
         uri: base + path,
         qs: qs,
         body: body,
@@ -24,7 +25,7 @@ function request (deferred, method, path, qs, body) {
             bearer: _credentials
         },
         headers: {
-            'User-Agent': 'signaturit-node-sdk 1.0.1'
+            'User-Agent': 'signaturit-node-sdk 1.0.2'
         },
         json: true
     }, function (error, response, body) {
