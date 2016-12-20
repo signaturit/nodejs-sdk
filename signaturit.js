@@ -223,7 +223,7 @@ SignaturitClient.prototype.downloadEmailAuditTrail = function (emailId, certific
     return requestWithDeferred('GET', '/v3/emails/' + emailId + '/certificates/' + certificateId + '/download/audit_trail', undefined, undefined, true);
 };
 
-SignaturitClient.prototype.getSms = function(limit, offset, conditions) {
+SignaturitClient.prototype.getSMS = function(limit, offset, conditions) {
     var parameters = extractQueryParameters(conditions);
 
     parameters.limit  = limit || 100;
@@ -232,18 +232,18 @@ SignaturitClient.prototype.getSms = function(limit, offset, conditions) {
     return requestWithDeferred('GET', '/v3/sms.json', parameters);
 };
 
-SignaturitClient.prototype.countSms = function(conditions) {
+SignaturitClient.prototype.countSMS = function(conditions) {
     var parameters = extractQueryParameters(conditions);
 
     return requestWithDeferred('GET', '/v3/sms/count.json', parameters);
 };
 
-SignaturitClient.prototype.getSingleSms = function(smsId) {
+SignaturitClient.prototype.getSingleSMS = function(smsId) {
     return requestWithDeferred('GET', "/v3/sms/" + smsId + ".json");
 };
 
 
-SignaturitClient.prototype.createSms = function(files, recipients, body, params) {
+SignaturitClient.prototype.createSMS = function(files, recipients, body, params) {
     var deferred = Q.defer(),
         req      = request(deferred, 'POST', '/v3/sms.json'),
         form     = req.form();
@@ -255,7 +255,7 @@ SignaturitClient.prototype.createSms = function(files, recipients, body, params)
     return deferred.promise;
 };
 
-SignaturitClient.prototype.downloadSmsAuditTrail = function (emailId, certificateId) {
+SignaturitClient.prototype.downloadSMSAuditTrail = function (emailId, certificateId) {
     return requestWithDeferred('GET', '/v3/sms/' + emailId + '/certificates/' + certificateId + '/download/audit_trail');
 };
 
