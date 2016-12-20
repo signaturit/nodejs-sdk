@@ -501,3 +501,590 @@ client.downloadEmailAuditTrail('EMAIL_ID','CERTIFICATE_ID').then(function (error
   }
 })
 ```
+
+## Sms
+
+### Get sms
+
+Get all certified sms
+
+####Get all certified sms
+
+```
+client.getSms().then(function(error, result) {
+    if (result) {
+        // Success code
+    }
+
+    if (error) {
+        // Error code
+    }
+});
+```
+
+####Get last 50 sms
+
+```
+client.getSms(50).then(function(error, result) {
+    if (result) {
+        // Success code
+    }
+
+    if (error) {
+        // Error code
+    }
+});
+```
+
+####Navigate through all sms in blocks of 50 results
+
+```
+client.getSms(50, 50).then(function(error, result) {
+    if (result) {
+        // Success code
+    }
+
+    if (error) {
+        // Error code
+    }
+});
+```
+
+### Count sms
+
+Count all certified sms
+
+```
+client.countSms().then(function(error, result) {
+    if (result) {
+        // Success code
+    }
+
+    if (error) {
+        // Error code
+    }
+});
+```
+
+### Get sms
+
+Get a single sms
+
+```
+client.getSingleSms('SMS_ID').then(function(error, result) {
+    if (result) {
+        // Success code
+    }
+
+    if (error) {
+        // Error code
+    }
+});
+```
+
+### Create sms
+
+Create a new certified sms.
+
+```
+recipients = [
+  {'name': 'Bob', 'phone': 34123456}
+];
+
+
+client.createSms([], recipients, "Node body").then(function(error, result) {
+    if (result) {
+        // Success code
+    }
+
+    if (error) {
+        // Error code
+    }
+});
+```
+
+### Get audit trail document
+
+Get the audit trail document of an sms request
+
+```
+client.downloadSmsAuditTrail('SMS_ID','CERTIFICATE_ID').then(function (error, result) {
+  if (result) {
+    // success code
+  }
+
+  if (error) {
+    // Error code
+  }
+})
+```
+
+## Team
+
+### Get users
+
+Get all account users
+
+```
+client.getUsers().then(function(error, result) {
+    if (result) {
+        // Success code
+    }
+
+    if (error) {
+        // Error code
+    }
+});
+```
+
+### Get seats
+
+Get all account seats
+
+```
+client.getSeats().then(function(error, result) {
+    if (result) {
+        // Success code
+    }
+
+    if (error) {
+        // Error code
+    }
+});
+```
+
+### Get user
+
+Get a single user
+
+```
+client.getUser('USER_ID').then(function(error, result) {
+    if (result) {
+        // Success code
+    }
+
+    if (error) {
+        // Error code
+    }
+});
+```
+
+### Invite users to join your team
+
+Invite user to join the team
+ 
+```
+client.inviteUser('bob.soap@signaturit.com', 'admin').then(function(error, result) {
+    if (result) {
+        // Success code
+    }
+
+    if (error) {
+        // Error code
+    }
+});
+```
+
+### Change user role
+
+Change role for user
+
+```
+client.changeUserRole('USER_ID', 'member').then(function(error, result) {
+    if (result) {
+        // Success code
+    }
+
+    if (error) {
+        // Error code
+    }
+});
+```
+
+### Remove user
+
+Remove user from the team
+
+```
+client.removeUser('USER_ID').then(function(error, result) {
+    if (result) {
+        // Success code
+    }
+
+    if (error) {
+        // Error code
+    }
+});
+```
+
+### Remove seat
+
+Remove seat from the team
+
+```
+client.removeSeat().then(function(error, result) {
+    if (result) {
+        // Success code
+    }
+
+    if (error) {
+        // Error code
+    }
+});
+```
+
+### Get groups
+
+Get all account groups
+
+```
+client.getGroups().then(function(error, result) {
+    if (result) {
+        // Success code
+    }
+
+    if (error) {
+        // Error code
+    }
+});
+```
+
+### Get group
+
+Get a single group
+
+```
+client.getGroup('GROUP_ID').then(function(error, result) {
+    if (result) {
+        // Success code
+    }
+
+    if (error) {
+        // Error code
+    }
+});
+```
+
+### Create group
+
+Create a new group
+
+```
+client.createGroup('test_node').then(function(error, result) {
+    if (result) {
+        // Success code
+    }
+
+    if (error) {
+        // Error code
+    }
+});
+```
+
+### Update group
+
+Update group name
+
+```
+client.updateGroup('GROUP_ID', 'new_name').then(function(error, result) {
+    if (result) {
+        // Success code
+    }
+
+    if (error) {
+        // Error code
+    }
+});
+```
+
+### Delete group
+
+Delete a group
+
+```
+client.deleteGroup('GROUP_ID').then(function(error, result) {
+    if (result) {
+        // Success code
+    }
+
+    if (error) {
+        // Error code
+    }
+});
+```
+
+### Add manager to group
+
+Add a manager to a group
+
+```
+client.addManagerToGroup('GROUP_ID', 'USER_ID').then(function(error, result) {
+    if (result) {
+        // Success code
+    }
+
+    if (error) {
+        // Error code
+    }
+});
+```
+
+### Add manager to group
+
+Add a member to a group
+
+```
+client.addMemberToGroup('GROUP_ID', 'USER_ID').then(function(error, result) {
+    if (result) {
+        // Success code
+    }
+
+    if (error) {
+        // Error code
+    }
+});
+
+### Delete manager from group
+
+Remove a manager from group
+
+```
+client.removeManagerFromGroup('GROUP_ID', 'USER_ID').then(function(error, result) {
+    if (result) {
+        // Success code
+    }
+
+    if (error) {
+        // Error code
+    }
+});
+```
+
+### Delete member from group
+
+Remove a member from group
+
+```
+client.removeMemberFromGroup('GROUP_ID', 'USER_ID').then(function(error, result) {
+    if (result) {
+        // Success code
+    }
+
+    if (error) {
+        // Error code
+    }
+});
+
+## Contacts
+
+### Get contacts
+
+Get all contacts
+
+```
+client.getContacts().then(function(error, result) {
+    if (result) {
+        // Success code
+    }
+
+    if (error) {
+        // Error code
+    }
+});
+```
+
+### Get contact
+
+Get a single contact
+
+```
+client.getContact('CONTACT_ID').then(function(error, result) {
+    if (result) {
+        // Success code
+    }
+
+    if (error) {
+        // Error code
+    }
+});
+```
+
+### Create contact
+
+Create a new contact
+
+```
+client.createContact('email@signaturit.com', 'name').then(function(error, result) {
+    if (result) {
+        // Success code
+    }
+
+    if (error) {
+        // Error code
+    }
+});
+```
+
+### Update contact
+
+Update contact
+
+```
+client.updateContact('CONTACT_ID', 'new_email@signaturit.com', 'name1').then(function(error, result) {
+    if (result) {
+        // Success code
+    }
+
+    if (error) {
+        // Error code
+    }
+});
+```
+
+### Delete contact
+
+Delete a contact
+
+```
+client.deleteContact('CONTACT_ID').then(function(error, result) {
+    if (result) {
+        // Success code
+    }
+
+    if (error) {
+        // Error code
+    }
+});
+```
+
+## Subscriptions
+
+### Get subscriptions
+
+Get all subscriptions
+
+```
+client.getSubscriptions().then(function(error, result) {
+    if (result) {
+        // Success code
+    }
+
+    if (error) {
+        // Error code
+    }
+});
+```
+
+### Count subscriptions
+
+Count all subscriptions
+
+```
+client.countSubscriptions().then(function(error, result) {
+    if (result) {
+        // Success code
+    }
+
+    if (error) {
+        // Error code
+    }
+});
+```
+
+### Get subscription
+
+Get a single subscription
+
+```
+client.getSubscription('SUBSCRIPTION_ID').then(function(error, result) {
+    if (result) {
+        // Success code
+    }
+
+    if (error) {
+        // Error code
+    }
+});
+```
+
+## Packages
+
+### Get packages
+
+Get all packages
+
+```
+client.getPackages().then(function(error, result) {
+    if (result) {
+        // Success code
+    }
+
+    if (error) {
+        // Error code
+    }
+});
+```
+
+### Get package
+
+Get a single package
+
+```
+client.getPackage('PACKAGE_ID').then(function(error, result) {
+    if (result) {
+        // Success code
+    }
+
+    if (error) {
+        // Error code
+    }
+});
+```
+
+### Create signature package
+
+Create a signature package
+
+```
+client.createSignaturePackage('/path/to/file.xls', '/path/to/file.pdf', {'have_header':1}).then(function(error, result) {
+    if (result) {
+        // Success code
+    }
+
+    if (error) {
+        // Error code
+    }
+});
+```
+
+### Create email package
+
+Create a email package
+
+```
+client.createEmailPackage('/path/to/file.xls', '/path/to/file.pdf', {}).then(function(error, result) {
+    if (result) {
+        // Success code
+    }
+
+    if (error) {
+        // Error code
+    }
+});
+```
+
+### Create sms package
+
+Create a sms package
+
+```
+client.createSmsPackage('/path/to/file.xls', null, {}).then(function(error, result) {
+    if (result) {
+        // Success code
+    }
+
+    if (error) {
+        // Error code
+    }
+});
+```
