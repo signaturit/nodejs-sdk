@@ -441,38 +441,4 @@ SignaturitClient.prototype.deleteSubscription = function(subscriptionId) {
     return requestWithDeferred('DELETE', "/v3/subscriptions/" + subscriptionId + ".json");
 };
 
-SignaturitClient.prototype.getPackages = function(limit, offset, conditions) {
-    var parameters = extractQueryParameters(conditions);
-
-    parameters.limit  = limit || 100;
-    parameters.offset = offset || 0;
-
-    return requestWithDeferred('GET', '/v3/packages.json', parameters);
-};
-
-SignaturitClient.prototype.getPackage = function(packageId) {
-    return requestWithDeferred('GET', "/v3/packages/" + packageId + ".json");
-};
-
-SignaturitClient.prototype.createSignaturePackage = function(sheet, files, params) {
-    var deferred = Q.defer(),
-        req      = request(deferred, 'POST', '/v3/packages/signatures.json'),
-        form     = req.form();
-
-    var isArray = typeof files == 'array';
-    var isFile  = typeof sheet != 'array';
-
-    if (!isArray) {
-        files = [files];
-    }
-
-    if (!isFile) {
-        sheet = sheet[0];
-    }
-
-    extractPackageParameters(form, sheet, files, params);
-
-    return deferred.promise;
-};
-
 module.exports = SignaturitClient;
