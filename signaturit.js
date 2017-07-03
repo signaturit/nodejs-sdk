@@ -1,19 +1,17 @@
-var _credentials,
-    _production,
-    Q   = require('q'),
+var Q   = require('q'),
     fs  = require('fs'),
     req = require('request');
 
-function requestWithDeferred (method, path, qs, body, binary) {
+function requestWithDeferred (credentials, production, method, path, qs, body, binary) {
     var deferred = Q.defer();
 
-    request(deferred, method, path, qs, body, binary);
+    request(credentials, production, deferred, method, path, qs, body, binary);
 
     return deferred.promise;
 }
 
-function request (deferred, method, path, qs, body, binary) {
-    var base = _production ? 'https://api.signaturit.com' : 'https://api.sandbox.signaturit.com';
+function request (credentials, production, deferred, method, path, qs, body, binary) {
+    var base = production ? 'https://api.signaturit.com' : 'https://api.sandbox.signaturit.com';
 
     return req({
         method: method,
@@ -22,7 +20,7 @@ function request (deferred, method, path, qs, body, binary) {
         qs: qs,
         body: body,
         auth: {
-            bearer: _credentials
+            bearer: credentials
         },
         headers: {
             'User-Agent': 'signaturit-node-sdk 1.1.0'
@@ -113,12 +111,12 @@ function extractPackageParameters (form, sheet, files, parameters)
 }
 
 function SignaturitClient (credentials, production) {
-    _credentials = credentials;
-    _production  = production;
+    this._credentials = credentials;
+    this._production  = production;
 }
 
 SignaturitClient.prototype.getSignature = function (signatureId) {
-    return requestWithDeferred('GET', '/v3/signatures/' + signatureId + '.json', undefined, undefined, false);
+    return requestWithDeferred(this._credentials, this._production, 'GET', '/v3/signatures/' + signatureId + '.json', undefined, undefined, false);
 };
 
 SignaturitClient.prototype.getSignatures = function (limit, offset, conditions) {
@@ -127,26 +125,26 @@ SignaturitClient.prototype.getSignatures = function (limit, offset, conditions) 
     parameters.limit  = limit || 100;
     parameters.offset = offset || 0;
 
-    return requestWithDeferred('GET', '/v3/signatures.json', parameters, undefined, false);
+    return requestWithDeferred(this._credentials, this._production, 'GET', '/v3/signatures.json', parameters, undefined, false);
 };
 
 SignaturitClient.prototype.countSignatures = function (conditions) {
     var parameters = extractQueryParameters(conditions);
 
-    return requestWithDeferred('GET', '/v3/signatures/count.json', parameters, undefined, false);
+    return requestWithDeferred(this._credentials, this._production, 'GET', '/v3/signatures/count.json', parameters, undefined, false);
 };
 
 SignaturitClient.prototype.downloadAuditTrail = function (signatureId, documentId) {
-    return requestWithDeferred('GET', '/v3/signatures/' + signatureId + '/documents/' + documentId + '/download/audit_trail', undefined, undefined, true);
+    return requestWithDeferred(this._credentials, this._production, 'GET', '/v3/signatures/' + signatureId + '/documents/' + documentId + '/download/audit_trail', undefined, undefined, true);
 };
 
 SignaturitClient.prototype.downloadSignedDocument = function (signatureId, documentId) {
-    return requestWithDeferred('GET', '/v3/signatures/' + signatureId + '/documents/' + documentId + '/download/signed', undefined, undefined, true);
+    return requestWithDeferred(this._credentials, this._production, 'GET', '/v3/signatures/' + signatureId + '/documents/' + documentId + '/download/signed', undefined, undefined, true);
 };
 
 SignaturitClient.prototype.createSignature = function (filesPath, recipients, params) {
     var deferred = Q.defer(),
-        req      = request(deferred, 'POST', '/v3/signatures.json', undefined, undefined, false),
+        req      = request(this._credentials, this._production, deferred, 'POST', '/v3/signatures.json', undefined, undefined, false),
         form     = req.form();
 
     extractPostParameters(form, filesPath, recipients, params);
@@ -155,27 +153,27 @@ SignaturitClient.prototype.createSignature = function (filesPath, recipients, pa
 };
 
 SignaturitClient.prototype.cancelSignature = function (signatureId) {
-    return requestWithDeferred('PATCH', '/v3/signatures/' + signatureId + '/cancel.json', undefined, undefined, false);
+    return requestWithDeferred(this._credentials, this._production, 'PATCH', '/v3/signatures/' + signatureId + '/cancel.json', undefined, undefined, false);
 };
 
 SignaturitClient.prototype.sendSignatureReminder = function (signatureId) {
-    return requestWithDeferred('POST', '/v3/signatures/' + signatureId + '/reminder.json', undefined, undefined, false);
+    return requestWithDeferred(this._credentials, this._production, 'POST', '/v3/signatures/' + signatureId + '/reminder.json', undefined, undefined, false);
 };
 
 SignaturitClient.prototype.getBranding = function (brandingId) {
-    return requestWithDeferred('GET', '/v3/brandings/' + brandingId + '.json', undefined, undefined, false);
+    return requestWithDeferred(this._credentials, this._production, 'GET', '/v3/brandings/' + brandingId + '.json', undefined, undefined, false);
 };
 
 SignaturitClient.prototype.getBrandings = function () {
-    return requestWithDeferred('GET', '/v3/brandings.json', undefined, undefined, false);
+    return requestWithDeferred(this._credentials, this._production, 'GET', '/v3/brandings.json', undefined, undefined, false);
 };
 
 SignaturitClient.prototype.createBranding = function (params) {
-    return requestWithDeferred('POST', '/v3/brandings.json', null, params, false);
+    return requestWithDeferred(this._credentials, this._production, 'POST', '/v3/brandings.json', null, params, false);
 };
 
 SignaturitClient.prototype.updateBranding = function (brandingId, params) {
-    return requestWithDeferred('PATCH', '/v3/brandings/' + brandingId + '.json', null, params, false);
+    return requestWithDeferred(this._credentials, this._production, 'PATCH', '/v3/brandings/' + brandingId + '.json', null, params, false);
 };
 
 SignaturitClient.prototype.getTemplates = function (limit, offset) {
@@ -184,7 +182,7 @@ SignaturitClient.prototype.getTemplates = function (limit, offset) {
     parameters.limit  = limit || 100;
     parameters.offset = offset || 0;
 
-    return requestWithDeferred('GET', '/v3/templates.json', parameters, undefined, false);
+    return requestWithDeferred(this._credentials, this._production, 'GET', '/v3/templates.json', parameters, undefined, false);
 };
 
 SignaturitClient.prototype.getEmails = function(limit, offset, conditions) {
@@ -193,22 +191,22 @@ SignaturitClient.prototype.getEmails = function(limit, offset, conditions) {
     parameters.limit  = limit || 100;
     parameters.offset = offset || 0;
 
-    return requestWithDeferred('GET', '/v3/emails.json', parameters, undefined, false);
+    return requestWithDeferred(this._credentials, this._production, 'GET', '/v3/emails.json', parameters, undefined, false);
 };
 
 SignaturitClient.prototype.countEmails = function(conditions) {
     var parameters = extractQueryParameters(conditions);
 
-    return requestWithDeferred('GET', '/v3/emails/count.json', parameters, undefined, false);
+    return requestWithDeferred(this._credentials, this._production, 'GET', '/v3/emails/count.json', parameters, undefined, false);
 };
 
 SignaturitClient.prototype.getEmail = function(emailId) {
-    return requestWithDeferred('GET', "/v3/emails/" + emailId + ".json", undefined, undefined, false);
+    return requestWithDeferred(this._credentials, this._production, 'GET', "/v3/emails/" + emailId + ".json", undefined, undefined, false);
 };
 
 SignaturitClient.prototype.createEmail = function(files, recipients, subject, body, params) {
     var deferred = Q.defer(),
-        req      = request(deferred, 'POST', '/v3/emails.json', undefined, undefined, false),
+        req      = request(this._credentials, this._production, deferred, 'POST', '/v3/emails.json', undefined, undefined, false),
         form     = req.form();
 
     extractPostParameters(form, files, recipients, params);
@@ -220,7 +218,7 @@ SignaturitClient.prototype.createEmail = function(files, recipients, subject, bo
 };
 
 SignaturitClient.prototype.downloadEmailAuditTrail = function (emailId, certificateId) {
-    return requestWithDeferred('GET', '/v3/emails/' + emailId + '/certificates/' + certificateId + '/download/audit_trail', undefined, undefined, true);
+    return requestWithDeferred(this._credentials, this._production, 'GET', '/v3/emails/' + emailId + '/certificates/' + certificateId + '/download/audit_trail', undefined, undefined, true);
 };
 
 SignaturitClient.prototype.getSMS = function(limit, offset, conditions) {
@@ -229,23 +227,23 @@ SignaturitClient.prototype.getSMS = function(limit, offset, conditions) {
     parameters.limit  = limit || 100;
     parameters.offset = offset || 0;
 
-    return requestWithDeferred('GET', '/v3/sms.json', parameters);
+    return requestWithDeferred(this._credentials, this._production, 'GET', '/v3/sms.json', parameters);
 };
 
 SignaturitClient.prototype.countSMS = function(conditions) {
     var parameters = extractQueryParameters(conditions);
 
-    return requestWithDeferred('GET', '/v3/sms/count.json', parameters);
+    return requestWithDeferred(this._credentials, this._production, 'GET', '/v3/sms/count.json', parameters);
 };
 
 SignaturitClient.prototype.getSingleSMS = function(smsId) {
-    return requestWithDeferred('GET', "/v3/sms/" + smsId + ".json");
+    return requestWithDeferred(this._credentials, this._production, 'GET', "/v3/sms/" + smsId + ".json");
 };
 
 
 SignaturitClient.prototype.createSMS = function(files, recipients, body, params) {
     var deferred = Q.defer(),
-        req      = request(deferred, 'POST', '/v3/sms.json'),
+        req      = request(this._credentials, this._production, deferred, 'POST', '/v3/sms.json'),
         form     = req.form();
 
     extractPostParameters(form, files, recipients, params);
@@ -256,7 +254,7 @@ SignaturitClient.prototype.createSMS = function(files, recipients, body, params)
 };
 
 SignaturitClient.prototype.downloadSMSAuditTrail = function (emailId, certificateId) {
-    return requestWithDeferred('GET', '/v3/sms/' + emailId + '/certificates/' + certificateId + '/download/audit_trail');
+    return requestWithDeferred(this._credentials, this._production, 'GET', '/v3/sms/' + emailId + '/certificates/' + certificateId + '/download/audit_trail');
 };
 
 SignaturitClient.prototype.getUsers = function(limit, offset, conditions) {
@@ -265,7 +263,7 @@ SignaturitClient.prototype.getUsers = function(limit, offset, conditions) {
     parameters.limit  = limit || 100;
     parameters.offset = offset || 0;
 
-    return requestWithDeferred('GET', '/v3/team/users.json', parameters);
+    return requestWithDeferred(this._credentials, this._production, 'GET', '/v3/team/users.json', parameters);
 };
 
 SignaturitClient.prototype.getSeats = function(limit, offset, conditions) {
@@ -274,11 +272,11 @@ SignaturitClient.prototype.getSeats = function(limit, offset, conditions) {
     parameters.limit  = limit || 100;
     parameters.offset = offset || 0;
 
-    return requestWithDeferred('GET', '/v3/team/seats.json', parameters);
+    return requestWithDeferred(this._credentials, this._production, 'GET', '/v3/team/seats.json', parameters);
 };
 
 SignaturitClient.prototype.getUser = function(userId) {
-    return requestWithDeferred('GET', "/v3/team/users/" + userId + ".json");
+    return requestWithDeferred(this._credentials, this._production, 'GET', "/v3/team/users/" + userId + ".json");
 };
 
 SignaturitClient.prototype.inviteUser = function(email, role) {
@@ -287,7 +285,7 @@ SignaturitClient.prototype.inviteUser = function(email, role) {
     parameters.email = email
     parameters.role = role
 
-    return requestWithDeferred('POST', "/v3/team/users.json", null, parameters);
+    return requestWithDeferred(this._credentials, this._production, 'POST', "/v3/team/users.json", null, parameters);
 };
 
 SignaturitClient.prototype.changeUserRole = function(userId, role) {
@@ -295,15 +293,15 @@ SignaturitClient.prototype.changeUserRole = function(userId, role) {
 
     parameters.role  = role
 
-    return requestWithDeferred('PATCH', "/v3/team/users/" + userId + ".json", null, parameters);
+    return requestWithDeferred(this._credentials, this._production, 'PATCH', "/v3/team/users/" + userId + ".json", null, parameters);
 };
 
 SignaturitClient.prototype.removeUser = function(userId) {
-    return requestWithDeferred('DELETE', "/v3/team/users/" + userId + ".json");
+    return requestWithDeferred(this._credentials, this._production, 'DELETE', "/v3/team/users/" + userId + ".json");
 };
 
 SignaturitClient.prototype.removeSeat = function(seatId) {
-    return requestWithDeferred('DELETE', "/v3/team/seats/" + seatId + ".json");
+    return requestWithDeferred(this._credentials, this._production, 'DELETE', "/v3/team/seats/" + seatId + ".json");
 };
 
 SignaturitClient.prototype.getGroups = function(limit, offset, conditions) {
@@ -312,11 +310,11 @@ SignaturitClient.prototype.getGroups = function(limit, offset, conditions) {
     parameters.limit  = limit || 100;
     parameters.offset = offset || 0;
 
-    return requestWithDeferred('GET', '/v3/team/groups.json', parameters);
+    return requestWithDeferred(this._credentials, this._production, 'GET', '/v3/team/groups.json', parameters);
 };
 
 SignaturitClient.prototype.getGroup = function(groupId) {
-    return requestWithDeferred('GET', "/v3/team/groups/" + groupId + ".json");
+    return requestWithDeferred(this._credentials, this._production, 'GET', "/v3/team/groups/" + groupId + ".json");
 };
 
 SignaturitClient.prototype.createGroup = function(name) {
@@ -324,7 +322,7 @@ SignaturitClient.prototype.createGroup = function(name) {
 
     parameters.name = name
 
-    return requestWithDeferred('POST', "/v3/team/groups.json", null, parameters);
+    return requestWithDeferred(this._credentials, this._production, 'POST', "/v3/team/groups.json", null, parameters);
 };
 
 SignaturitClient.prototype.updateGroup = function(groupId, name) {
@@ -332,27 +330,27 @@ SignaturitClient.prototype.updateGroup = function(groupId, name) {
 
     parameters.name  = name
 
-    return requestWithDeferred('PATCH', "/v3/team/groups/" + groupId + ".json", null, parameters);
+    return requestWithDeferred(this._credentials, this._production, 'PATCH', "/v3/team/groups/" + groupId + ".json", null, parameters);
 };
 
 SignaturitClient.prototype.deleteGroup = function(groupId) {
-    return requestWithDeferred('DELETE', "/v3/team/groups/" + groupId + ".json");
+    return requestWithDeferred(this._credentials, this._production, 'DELETE', "/v3/team/groups/" + groupId + ".json");
 };
 
 SignaturitClient.prototype.addManagerToGroup = function(groupId, userId) {
-    return requestWithDeferred('POST', "/v3/team/groups/" + groupId + "/managers/"+ userId + ".json");
+    return requestWithDeferred(this._credentials, this._production, 'POST', "/v3/team/groups/" + groupId + "/managers/"+ userId + ".json");
 };
 
 SignaturitClient.prototype.addMemberToGroup = function(groupId, userId) {
-    return requestWithDeferred('POST', "/v3/team/groups/" + groupId + "/members/"+ userId + ".json");
+    return requestWithDeferred(this._credentials, this._production, 'POST', "/v3/team/groups/" + groupId + "/members/"+ userId + ".json");
 };
 
 SignaturitClient.prototype.removeManagerFromGroup = function(groupId, userId) {
-    return requestWithDeferred('DELETE', "/v3/team/groups/" + groupId + "/managers/"+ userId + ".json");
+    return requestWithDeferred(this._credentials, this._production, 'DELETE', "/v3/team/groups/" + groupId + "/managers/"+ userId + ".json");
 };
 
 SignaturitClient.prototype.removeMemmberFromGroup = function(groupId, userId) {
-    return requestWithDeferred('DELETE', "/v3/team/groups/" + groupId + "/members/"+ userId + ".json");
+    return requestWithDeferred(this._credentials, this._production, 'DELETE', "/v3/team/groups/" + groupId + "/members/"+ userId + ".json");
 };
 
 SignaturitClient.prototype.getContacts = function(limit, offset, conditions) {
@@ -361,11 +359,11 @@ SignaturitClient.prototype.getContacts = function(limit, offset, conditions) {
     parameters.limit  = limit || 100;
     parameters.offset = offset || 0;
 
-    return requestWithDeferred('GET', '/v3/contacts.json', parameters);
+    return requestWithDeferred(this._credentials, this._production, 'GET', '/v3/contacts.json', parameters);
 };
 
 SignaturitClient.prototype.getContact = function(contactId) {
-    return requestWithDeferred('GET', "/v3/contacts/" + contactId + ".json");
+    return requestWithDeferred(this._credentials, this._production, 'GET', "/v3/contacts/" + contactId + ".json");
 };
 
 SignaturitClient.prototype.createContact = function(email, name) {
@@ -374,7 +372,7 @@ SignaturitClient.prototype.createContact = function(email, name) {
     parameters.email = email
     parameters.name  = name
 
-    return requestWithDeferred('POST', "/v3/contacts.json", null, parameters);
+    return requestWithDeferred(this._credentials, this._production, 'POST', "/v3/contacts.json", null, parameters);
 };
 
 SignaturitClient.prototype.updateContact = function(contactId, email, name) {
@@ -388,11 +386,11 @@ SignaturitClient.prototype.updateContact = function(contactId, email, name) {
         parameters.name = name
     }
 
-    return requestWithDeferred('PATCH', "/v3/contacts/" + contactId + ".json", null, parameters);
+    return requestWithDeferred(this._credentials, this._production, 'PATCH', "/v3/contacts/" + contactId + ".json", null, parameters);
 };
 
 SignaturitClient.prototype.deleteContact = function(contactId) {
-    return requestWithDeferred('DELETE', "/v3/contacts/" + contactId + ".json");
+    return requestWithDeferred(this._credentials, this._production, 'DELETE', "/v3/contacts/" + contactId + ".json");
 };
 
 SignaturitClient.prototype.getSubscriptions = function(limit, offset, conditions) {
@@ -401,17 +399,17 @@ SignaturitClient.prototype.getSubscriptions = function(limit, offset, conditions
     parameters.limit  = limit || 100;
     parameters.offset = offset || 0;
 
-    return requestWithDeferred('GET', '/v3/subscriptions.json', parameters);
+    return requestWithDeferred(this._credentials, this._production, 'GET', '/v3/subscriptions.json', parameters);
 };
 
 SignaturitClient.prototype.countSubscriptions = function(conditions) {
     var parameters = extractQueryParameters(conditions);
 
-    return requestWithDeferred('GET', '/v3/subscriptions/count.json', parameters);
+    return requestWithDeferred(this._credentials, this._production, 'GET', '/v3/subscriptions/count.json', parameters);
 };
 
 SignaturitClient.prototype.getSubscription = function(subscriptionId) {
-    return requestWithDeferred('GET', "/v3/subscriptions/" + subscriptionId + ".json");
+    return requestWithDeferred(this._credentials, this._production, 'GET', "/v3/subscriptions/" + subscriptionId + ".json");
 };
 
 SignaturitClient.prototype.createSubscription = function(url, events) {
@@ -420,7 +418,7 @@ SignaturitClient.prototype.createSubscription = function(url, events) {
     parameters.url = url
     parameters.events  = events
 
-    return requestWithDeferred('POST', "/v3/subscriptions.json", null, parameters);
+    return requestWithDeferred(this._credentials, this._production, 'POST', "/v3/subscriptions.json", null, parameters);
 };
 
 SignaturitClient.prototype.updateSubscription = function(subscriptionId, url, events) {
@@ -434,11 +432,11 @@ SignaturitClient.prototype.updateSubscription = function(subscriptionId, url, ev
         parameters.events = events
     }
 
-    return requestWithDeferred('PATCH', "/v3/subscriptions/" + subscriptionId + ".json", null, parameters);
+    return requestWithDeferred(this._credentials, this._production, 'PATCH', "/v3/subscriptions/" + subscriptionId + ".json", null, parameters);
 };
 
 SignaturitClient.prototype.deleteSubscription = function(subscriptionId) {
-    return requestWithDeferred('DELETE', "/v3/subscriptions/" + subscriptionId + ".json");
+    return requestWithDeferred(this._credentials, this._production, 'DELETE', "/v3/subscriptions/" + subscriptionId + ".json");
 };
 
 module.exports = SignaturitClient;
