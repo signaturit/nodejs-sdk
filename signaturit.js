@@ -68,7 +68,7 @@ function fillArray(formArray, values, parent)
 
 function extractPostParameters (form, files, recipients, parameters)
 {
-    files = [].concat(files);
+    files = files ? [].concat(files) : [];
 
     files.forEach(function(filePath, i) {
         form.append(
@@ -77,7 +77,7 @@ function extractPostParameters (form, files, recipients, parameters)
         );
     });
 
-    recipients = [].concat(recipients);
+    recipients = recipients ? [].concat(recipients) : [];
 
     recipients.forEach(function(recipient, i) {
         fillArray(form, recipient, 'recipients['+i+']');
