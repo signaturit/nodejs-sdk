@@ -8,8 +8,15 @@
     },
     "license": "MIT",
     "main": "signaturit.js",
+    "scripts": {
+        "test": "jest",
+        "test:coverage": "jest --coverage"
+    },
     "dependencies": {
         "q": "^1.1.0",
         "request": "^2.42.0"
+    },
+    "devDependencies": {
+        "jest": "^25.1.0"
     }
 }
