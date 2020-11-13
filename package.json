@@ -8,6 +8,7 @@
     },
     "license": "MIT",
     "main": "signaturit.js",
+    "types": "signaturit.d.ts",
     "scripts": {
         "test": "jest",
         "test:coverage": "jest --coverage"
