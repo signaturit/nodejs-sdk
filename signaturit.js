@@ -61,6 +61,9 @@ function fillArray(formArray, values, parent)
         if (value instanceof Array || value instanceof Object) {
             fillArray(formArray, value, parentKey);
         } else {
+            if (value === undefined) {
+                continue;
+            }
             formArray.append(parentKey, value);
         }
     }
