@@ -23,7 +23,7 @@ function request (credentials, production, deferred, method, path, qs, body, bin
             bearer: credentials
         },
         headers: {
-            'User-Agent': 'signaturit-node-sdk 1.1.0'
+            'User-Agent': 'signaturit-node-sdk 1.2.1'
         },
         json: true
     }, function (error, response, body) {
