@@ -71,7 +71,11 @@ function fillArray(formArray, values, parent)
 
 function extractPostParameters (form, files, recipients, parameters)
 {
-    files = [].concat(files);
+    if (!recipients || Array.isArray(recipients) && !recipients.length) {
+        throw new Error('Missing required parameter: recipients')
+    }
+
+    files = files ? [].concat(files) : [];
 
     files.forEach(function(filePath, i) {
         form.append(
