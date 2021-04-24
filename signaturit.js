@@ -30,7 +30,7 @@ function request (credentials, production, deferred, method, path, qs, body, bin
         if (!error && response.statusCode < 400) {
             deferred.resolve(body);
         } else {
-            deferred.reject(body);
+            deferred.reject(error);
         }
     });
 }
